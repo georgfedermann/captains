@@ -4,6 +4,7 @@ import com.sneaky.data.persistence.entities.Officer;
 import com.sneaky.data.persistence.entities.Rank;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
@@ -19,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 class JdbcOfficerDaoTest {
 
     @Autowired
+    @Qualifier("jdbcOfficerDao")
     private OfficerDao dao;
 
     @Test
