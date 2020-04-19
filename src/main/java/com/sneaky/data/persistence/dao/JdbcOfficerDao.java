@@ -5,25 +5,42 @@ import com.sneaky.data.persistence.entities.Rank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 public class JdbcOfficerDao implements OfficerDao {
     private JdbcTemplate jdbcTemplate;
 
+    private RowMapper<Officer> rowMapper = (rs, rowNum) -> new Officer(rs.getInt("id"),
+            Rank.valueOf(rs.getString("rank")),
+            rs.getString("first_name"),
+            rs.getString("last_name"));
+
+    private SimpleJdbcInsert insertOfficer;
+
     @Autowired
     public JdbcOfficerDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        insertOfficer = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("officers")
+                .usingGeneratedKeyColumns("id");
     }
 
     @Override
     public Officer save(Officer officer) {
-        return null;
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("rank", officer.getRank());
+        parameters.put("first_name", officer.getFirst());
+        parameters.put("last_name", officer.getLast());
+        Integer newId = (Integer) insertOfficer.executeAndReturnKey(parameters);
+        officer.setId(newId);
+        return officer;
     }
 
     @Override
@@ -34,15 +51,7 @@ public class JdbcOfficerDao implements OfficerDao {
         } else {
             result = Optional.of(jdbcTemplate.queryForObject(
                     "SELECT id, first_name, last_name, rank FROM officers WHERE id = ?",
-                    new RowMapper<Officer>() {
-                        @Override
-                        public Officer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                            return new Officer(rs.getInt("id"),
-                                    Rank.valueOf(rs.getString("rank")),
-                                    rs.getString("first_name"),
-                                    rs.getString("last_name"));
-                        }
-                    }, id));
+                    rowMapper, id));
         }
         return result;
     }
@@ -50,10 +59,7 @@ public class JdbcOfficerDao implements OfficerDao {
     @Override
     public List<Officer> findAll() {
         return jdbcTemplate.query("SELECT id, rank, first_name, last_name FROM officers",
-                (rs, rowNum) -> new Officer(rs.getInt("id"),
-                        Rank.valueOf(rs.getString("rank")),
-                        rs.getString("first_name"),
-                        rs.getString("last_name")));
+                rowMapper);
     }
 
     @Override
