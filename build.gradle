@@ -18,6 +18,9 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+
+    // https://mvnrepository.com/artifact/com.google.truth/truth
+    testCompile group: 'com.google.truth', name: 'truth', version: '1.0.1'
 }
 
 test {

@@ -13,6 +13,12 @@ public class Officer {
         this.last = last;
     }
 
+    public Officer(Rank rank, String first, String last) {
+        this.rank = rank;
+        this.first = first;
+        this.last = last;
+    }
+
     public Integer getId() {
         return id;
     }
