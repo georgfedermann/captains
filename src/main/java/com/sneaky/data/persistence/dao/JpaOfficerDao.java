@@ -8,7 +8,9 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+// specifying the class name in @Repository like so has the same effect as
+// using the default value for the spring bean as provided by spring.
+@Repository("jpaOfficerDao")
 public class JpaOfficerDao implements OfficerDao {
     @PersistenceContext
     private EntityManager entityManager;
