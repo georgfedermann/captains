@@ -34,7 +34,7 @@ class JpaOfficerDaoTest {
         assertThat(officer.getId()).isNull();
         dao.save(officer);
         assertAll(
-                () -> assertThat(officer.getId()).isEqualTo(6)
+                () -> assertThat(officer.getId()).isGreaterThan(0)
         );
     }
 
