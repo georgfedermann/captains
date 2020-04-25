@@ -1,10 +1,29 @@
 package com.sneaky.data.persistence.entities;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "officers")
 public class Officer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Enumerated(EnumType.STRING)
     private Rank rank;
+    @Column(name = "first_name")
     private String first;
+    @Column(name = "last_name")
     private String last;
+
+    public Officer() {
+    }
 
     public Officer(Integer id, Rank rank, String first, String last) {
         this.id = id;

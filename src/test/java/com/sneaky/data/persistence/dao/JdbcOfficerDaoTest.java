@@ -29,6 +29,7 @@ class JdbcOfficerDaoTest {
         assertThat(officer.getId()).isNull();
         officer = dao.save(officer);
         assertThat(officer.getId()).isGreaterThan(0);
+        assertThat(officer.getId()).isEqualTo(6);
     }
 
     @Test
