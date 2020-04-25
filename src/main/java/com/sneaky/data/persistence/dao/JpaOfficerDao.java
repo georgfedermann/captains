@@ -44,10 +44,9 @@ public class JpaOfficerDao implements OfficerDao {
 
     @Override
     public boolean existsById(Integer id) {
-        Object result = entityManager.createQuery(
+        return !entityManager.createQuery(
                 "SELECT 1 FROM Officer o where o.id =: id")
                 .setParameter("id", id)
-                .getSingleResult();
-        return result != null;
+                .getResultList().isEmpty();
     }
 }

@@ -76,6 +76,30 @@ class JpaOfficerDaoTest {
     }
 
     @Test
+    public void delete() throws Exception {
+        template.query("SELECT id FROM officers", (rs, num) -> rs.getInt("id"))
+                .forEach(id -> {
+                    Optional<Officer> officer = dao.findById(id);
+                    assertThat(officer.isPresent());
+                    dao.delete(officer.get());
+                    System.out.println(String.format("id of deleted officer is %d", officer.get().getId()));
+                    assertThat(dao.existsById(officer.get().getId())).isFalse();
+                });
+        assertThat(dao.count()).isEqualTo(0);
+    }
+
+    @Test
+    public void existsByIdWithExistingId() throws Exception {
+        template.query("select id from officers", (rs, rowNum) -> rs.getInt("id"))
+                .forEach(id -> assertThat(dao.existsById(id)));
+    }
+
+    @Test
+    public void existsByIdWithNotExistingId() throws Exception {
+        assertThat(dao.existsById(197)).isFalse();
+    }
+
+    @Test
     public void findOneThatExists() throws Exception {
         System.out.println("Starting findOneThatExists");
         assertThat(template).isNotNull();
